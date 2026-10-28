@@ -1,0 +1,66 @@
+/* ==========================================================================
+   Horizon Designs — Design tokens
+   Single source of truth for color, type, layout and motion values.
+   ========================================================================== */
+
+:root {
+  /* --- Color palette ------------------------------------------------------ */
+  --c-obsidian: #0a0a0c;        /* page background */
+  --c-graphite: #151519;        /* surface */
+  --c-elevated: #1d1c21;        /* elevated surface */
+  --c-ivory: #f1ede5;           /* primary text */
+  --c-stone: #85838a;           /* muted text */
+  --c-bronze: #c6a675;          /* champagne bronze accent */
+  --c-bronze-deep: #35271d;     /* deep bronze */
+  --c-hairline: rgba(241, 237, 229, 0.12);   /* subtle borders */
+  --c-hairline-strong: rgba(241, 237, 229, 0.24);
+  --c-bronze-line: rgba(198, 166, 117, 0.4);
+  --c-bronze-soft: rgba(198, 166, 117, 0.12);
+  --c-focus: #e6c896;           /* keyboard focus ring */
+
+  /* --- Typography --------------------------------------------------------- */
+  --font-display: "Space Grotesk", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-body: "Manrope", "Segoe UI", system-ui, -apple-system, sans-serif;
+
+  /* Fluid type scale (clamp: min → preferred → max) */
+  --fs-hero: clamp(2.75rem, 1.4rem + 6.4vw, 6.75rem);
+  --fs-h2: clamp(2.1rem, 1.3rem + 3.4vw, 4rem);
+  --fs-h3: clamp(1.45rem, 1.15rem + 1.1vw, 2.1rem);
+  --fs-h4: clamp(1.15rem, 1.02rem + 0.5vw, 1.4rem);
+  --fs-lead: clamp(1.02rem, 0.96rem + 0.34vw, 1.24rem);
+  --fs-body: clamp(0.97rem, 0.94rem + 0.14vw, 1.05rem);
+  --fs-small: 0.875rem;
+  --fs-meta: 0.75rem;
+  --fs-eyebrow: 0.72rem;
+
+  --tracking-eyebrow: 0.2em;
+  --tracking-display: -0.03em;
+  --leading-display: 0.98;
+  --leading-tight: 1.14;
+  --leading-body: 1.65;
+
+  /* --- Layout ------------------------------------------------------------- */
+  --max-w: 1440px;
+  --gutter: clamp(22px, 5.6vw, 84px);
+  --section-y: clamp(84px, 9vw, 164px);
+  --header-h: 78px;
+
+  /* --- Motion ------------------------------------------------------------- */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);      /* expressive ease-out */
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);   /* neutral */
+  --t-btn: 180ms;                               /* button feedback 150–220ms */
+  --t-card: 320ms;                              /* card hover 250–400ms */
+  --t-reveal: 620ms;                            /* section reveal 450–700ms */
+  --t-hero: 1100ms;                             /* hero entrance 800–1400ms */
+
+  /* --- Shapes ------------------------------------------------------------- */
+  --radius-pill: 999px;
+  --radius-card: 2px;
+  --hairline: 1px solid var(--c-hairline);
+}
+
+/* Dark selection + sensible default focus for all interactive elements */
+::selection {
+  background: var(--c-bronze);
+  color: var(--c-obsidian);
+}
