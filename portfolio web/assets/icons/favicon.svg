@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" width="44" height="44">
+  <!-- Horizon Designs — H monogram: two pillars, extended bronze horizon bar,
+       and a rising-arc hint above the bar. Designed to stay sharp at 16px. -->
+  <rect width="44" height="44" rx="9" fill="#0A0A0C"/>
+  <rect x="7" y="9" width="5" height="26" rx="1" fill="#F1EDE5"/>
+  <rect x="32" y="9" width="5" height="26" rx="1" fill="#F1EDE5"/>
+  <path d="M9.5 15.5A12.5 12.5 0 0 1 34.5 15.5" fill="none" stroke="#C6A675" stroke-width="1.6" stroke-linecap="round"/>
+  <rect x="4" y="20.5" width="36" height="4" rx="1.2" fill="#C6A675"/>
+</svg>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mobile shot harness (dev tool)</title>
+  <!-- Dev-only: renders a page in an exactly-N-px iframe so headless Chrome
+       (which enforces a 500px minimum window width on Windows) can capture
+       true mobile widths. Usage: shot.html?url=/work.html&w=390&h=3600 -->
+  <style>
+    * { margin: 0; box-sizing: border-box; }
+    body { background: #0A0A0C; }
+    iframe { display: block; border: 0; }
+  </style>
+</head>
+<body>
+  <iframe id="frame" title="capture frame"></iframe>
+  <script>
+    (async () => {
+      const q = new URLSearchParams(location.search);
+      const url = q.get('url') || '/';
+      const w = parseInt(q.get('w') || '390', 10);
+      const h = parseInt(q.get('h') || '2600', 10);
+      const frame = document.getElementById('frame');
+      frame.style.width = w + 'px';
+      frame.style.height = h + 'px';
+      frame.src = url;
+      await new Promise((res) => { frame.onload = res; setTimeout(res, 8000); });
+      // let the inner page's JS settle (preloader, reveals) under virtual time
+      await new Promise((r) => setTimeout(r, 3500));
+      document.title = 'capture-ready';
+    })();
+  </script>
+</body>
+</html>

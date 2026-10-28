@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /tools/
+
+# Horizon Designs — https://your-domain.com/ (update when the domain is live)

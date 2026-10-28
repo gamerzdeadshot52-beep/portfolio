@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Responsive probe — Horizon Designs (dev tool)</title>
+  <!-- Dev-only harness: loads key pages at 6 representative widths in iframes
+       and reports horizontal overflow, clipped headings and menu behavior.
+       Not linked from the site; excluded via robots.txt. -->
+  <style>
+    body { background: #0f0f12; color: #ddd; font: 13px/1.5 Consolas, monospace; margin: 0; padding: 18px; }
+    h1 { font-size: 15px; color: #C6A675; }
+    pre { white-space: pre-wrap; word-break: break-all; }
+    .frame-row { display: flex; gap: 8px; flex-wrap: nowrap; margin-bottom: 10px; overflow: visible; }
+    iframe { border: 1px solid #333; height: 620px; flex: none; }
+  </style>
+</head>
+<body>
+  <h1>Responsive probe — running…</h1>
+  <div class="frame-row" id="frames" aria-hidden="true"></div>
+  <pre id="out">collecting…</pre>
+
+  <script>
+    (async () => {
+      const WIDTHS = [360, 390, 768, 1024, 1440, 1920];
+      const PAGES = [
+        { name: 'home', url: '/' },
+        { name: 'work', url: '/work.html' },
+        { name: 'services', url: '/services.html' },
+        { name: 'about', url: '/about.html' },
+        { name: 'process', url: '/process.html' },
+        { name: 'contact', url: '/contact.html' },
+        { name: 'case-royal', url: '/projects/royal-clinic-connect.html' },
+        { name: 'case-star', url: '/projects/star-electronics.html' },
+      ];
+      const results = [];
+      const framesHost = document.getElementById('frames');
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+      const loadFrame = async (url, width) => {
+        const f = document.createElement('iframe');
+        f.style.width = width + 'px';
+        f.src = url + (url.includes('?') ? '&' : '?') + 'w=' + width + '&r=' + Math.random().toString(36).slice(2);
+        framesHost.appendChild(f);
+        await new Promise((res) => { f.onload = res; setTimeout(res, 8000); });
+        await sleep(600); // let fonts + layout settle
+        return f;
+      };
+
+      const measure = (f, width) => {
+        let doc;
+        try { doc = f.contentDocument; } catch (e) { return { error: 'cross-origin' }; }
+        if (!doc || !doc.documentElement) return { error: 'no-doc' };
+        const de = doc.documentElement;
+        const win = f.contentWindow;
+
+        const overflow = de.scrollWidth > width + 1;
+        const offenders = [];
+        if (overflow) {
+          for (const el of doc.querySelectorAll('body *')) {
+            const r = el.getBoundingClientRect();
+            if (r.width && (r.right > width + 1 || r.left < -1)) {
+              offenders.push({
+                tag: el.tagName.toLowerCase(),
+                cls: (el.className && el.className.baseVal !== undefined ? el.className.baseVal : el.className || '').toString().slice(0, 42),
+                right: Math.round(r.right),
+                left: Math.round(r.left),
+              });
+              if (offenders.length >= 8) break;
+            }
+          }
+        }
+
+        // clipped headings (content wider than its box → hidden/scrolling text)
+        const clipped = [];
+        for (const sel of ['h1', 'h2', '.case-row__title', '.footer__wordmark', '.brand__name']) {
+          for (const el of doc.querySelectorAll(sel)) {
+            if (el.scrollWidth > el.clientWidth + 1 && de.scrollWidth > width) {
+              clipped.push({ sel, scroll: el.scrollWidth, client: el.clientWidth });
+            }
+          }
+        }
+
+        // tap targets on mobile (>= 40px preferred for touch)
+        const smallTargets = [];
+        if (width <= 768) {
+          for (const el of doc.querySelectorAll('a.btn, button, .nav-toggle, .back-to-top, .link-arrow')) {
+            const r = el.getBoundingClientRect();
+            if (r.width > 0 && r.height > 0 && (r.height < 36 || r.width < 36)) {
+              smallTargets.push({ t: (el.textContent || el.className).trim().slice(0, 26), w: Math.round(r.width), h: Math.round(r.height) });
+            }
+          }
+        }
+
+        return {
+          scrollW: de.scrollWidth,
+          overflow,
+          offenders,
+          clipped,
+          smallTargets: smallTargets.slice(0, 6),
+        };
+      };
+
+      for (const page of PAGES) {
+        for (const width of WIDTHS) {
+          const f = await loadFrame(page.url, width);
+          const m = measure(f, width);
+          results.push({ page: page.name, width, ...m });
+          f.remove();
+        }
+      }
+
+      // --- Mobile menu behavior at 390px on the homepage ---
+      const menuTest = { steps: [] };
+      try {
+        const f = await loadFrame('/', 390);
+        const doc = f.contentDocument;
+        const win = f.contentWindow;
+        const toggle = doc.querySelector('.nav-toggle');
+        const menu = doc.getElementById('mobile-menu');
+        const cs = win.getComputedStyle(toggle);
+        menuTest.steps.push({ s: 'toggle display@390', v: cs.display, visible: toggle.offsetParent !== null });
+        toggle.click();
+        await sleep(80);
+        menuTest.steps.push({
+          s: 'after open',
+          expanded: toggle.getAttribute('aria-expanded'),
+          hidden: menu.getAttribute('aria-hidden'),
+          openClass: menu.classList.contains('is-open'),
+          bodyLock: doc.body.style.overflow === 'hidden',
+          focusInMenu: menu.contains(doc.activeElement),
+          active: (doc.activeElement.className || '').toString().slice(0, 40),
+        });
+        doc.dispatchEvent(new win.KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+        await sleep(80);
+        menuTest.steps.push({
+          s: 'after ESC',
+          expanded: toggle.getAttribute('aria-expanded'),
+          hidden: menu.getAttribute('aria-hidden'),
+          bodyLock: doc.body.style.overflow === 'hidden',
+          focusOnToggle: doc.activeElement === toggle,
+          activeTag: doc.activeElement.tagName,
+        });
+        // link click closes menu (cancel the navigation so the test can stay on this page)
+        toggle.click();
+        await sleep(60);
+        const link = menu.querySelector('a[href="services.html"]');
+        const stopNav = (e) => e.preventDefault();
+        link.addEventListener('click', stopNav);
+        link.click();
+        link.removeEventListener('click', stopNav);
+        await sleep(80);
+        menuTest.steps.push({
+          s: 'after link click',
+          expanded: toggle.getAttribute('aria-expanded'),
+          bodyLock: doc.body.style.overflow === 'hidden',
+          hash: win.location.hash,
+        });
+        f.remove();
+      } catch (e) {
+        menuTest.error = String(e);
+      }
+
+      // --- Desktop: nav-desktop visible, toggle hidden at 1440 ---
+      const desktopTest = {};
+      try {
+        const f = await loadFrame('/', 1440);
+        const doc = f.contentDocument;
+        const win = f.contentWindow;
+        desktopTest.navVisible = win.getComputedStyle(doc.querySelector('.nav-desktop')).display !== 'none';
+        desktopTest.toggleHidden = win.getComputedStyle(doc.querySelector('.nav-toggle')).display === 'none';
+        desktopTest.headerCtaVisible = win.getComputedStyle(doc.querySelector('.site-header__actions .btn')).display !== 'none';
+        f.remove();
+      } catch (e) {
+        desktopTest.error = String(e);
+      }
+
+      const report = { results, menuTest, desktopTest };
+      window.__PROBE__ = report;
+      document.getElementById('out').textContent = JSON.stringify(report, null, 1);
+      document.querySelector('h1').textContent = 'Probe complete';
+    })();
+  </script>
+</body>
+</html>
