@@ -28,7 +28,7 @@ preloader and Three.js hero are homepage-only.
 
 The four featured projects are real, deployed websites — all URLs verified:
 
-1. **Royal Clinic Connect** — https://royal-clinic-connect.lovable.app/
+1. **Avi Clicks** — https://gamerzdeadshot52-beep.github.io/Aviclicks/#portfolio
 2. **Dhruva Infra and Energy Solutions** — https://vermillion-crepe-007be0.netlify.app/
    > Note: this project was originally titled "Vermillion Crepe" (the Netlify
    > subdomain still reflects the old name). The hosting account was redeployed
@@ -36,7 +36,7 @@ The four featured projects are real, deployed websites — all URLs verified:
    > `projects/dhruva-infra.html`.
 3. **Fairdeal Agencies** — https://fairdeal-agencies.ai.studio/
 4. **Star Electronics** — https://gamerzdeadshot52-beep.github.io/Star-electronics-4/
-
+5. **Ceator Sphere** - https://gamerzdeadshot52-beep.github.io/Creator-sphere/
 Project screenshots in `assets/images/` are genuine browser captures of these
 live sites. No fabricated testimonials, awards, phone numbers or results appear
 anywhere on the site.
