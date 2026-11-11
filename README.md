@@ -1,7 +1,7 @@
 # Horizon Designs — Portfolio Website
 
 The production website for **Horizon Designs**, the independent digital creative
-studio of **Vishal**. Tagline: *Beyond websites. Into experiences.*
+studio of **Vishal & Pratyush**. Tagline: *Beyond websites. Into experiences.*
 
 A multi-page, hand-built static site — semantic HTML5, modern CSS and vanilla
 JavaScript ES modules. No framework, no build step, no backend. Three.js powers
@@ -19,7 +19,7 @@ the homepage hero sculpture and is loaded lazily with a CSS 3D fallback.
 | About | `about.html` | Studio story, design philosophy, founder panel |
 | Process | `process.html` | The four-step process (discover → design → develop → launch) |
 | Contact | `contact.html` | Inquiry form + direct email/Instagram channels |
-| Case studies | `projects/royal-clinic-connect.html`, `projects/dhruva-infra.html`, `projects/fairdeal-agencies.html`, `projects/star-electronics.html` | One page per live project |
+| Case studies |  `projects/dhruva-infra.html`, `projects/fairdeal-agencies.html`, `projects/star-electronics.html` `projects/creator-sphere.html`, `projects/aviclicks.html` | One page per live project |
 
 Every interior page carries the same header, footer and closing CTA band; the
 preloader and Three.js hero are homepage-only.
