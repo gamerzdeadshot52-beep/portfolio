@@ -7,7 +7,7 @@
 
 export const BRAND = {
   name: 'Horizon Designs',
-  founder: 'Vishal',
+  founder: 'Vishal & Pratyush',
   founderRole: 'Founder & Developer',
   tagline: 'Beyond websites. Into experiences.',
   altTagline: 'Digital experiences, designed to stand apart.',
